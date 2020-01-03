@@ -8,8 +8,9 @@ import Home from './HomeComponent';
 import DishDetail from './DishDetailComponent';
 import Header from './HeaderComponent';
 import Footer from './FooterComponent';
+import About from './AboutComponent';
 import {Switch, Route, Redirect} from 'react-router-dom';
-import Contact from './ContanctComponent';
+import Contact from './ContactComponent';
 import { parse } from 'whatwg-mimetype';
 
 class Main extends Component {
@@ -44,12 +45,19 @@ class Main extends Component {
       );
     }
 
+    const AboutUs = () =>{
+      return(
+        <About leaders={this.state.leaders}/>
+      );
+    }
+
   return (
     <div>
       <Header/>
       <Switch>
         <Route path="/home" component={HomePage} />
         <Route exact path="/menu" component={() => <Menu dishes={this.state.dishes}/>} />
+        <Route path="/aboutus" component={AboutUs} />
         <Route path="/menu/:dishId" component={DishWithId} />
         <Route exact path="/contactus" component={Contact} />
         <Redirect to="/home" />

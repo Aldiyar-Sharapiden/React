@@ -96,7 +96,7 @@ class CommentForm extends Component {
         console.log("Current state is: " + JSON.stringify(values));
         alert("Current state is: " + JSON.stringify(values));
     }
-    
+
     render() {
         return (
             <div>
@@ -105,8 +105,8 @@ class CommentForm extends Component {
                     <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
                     <ModalBody>
                         <LocalForm onSubmit={this.handleSubmit}>
-                        <Row className="form-group">
-                        <Label htmlFor="firstname" md={12}>Rating</Label>
+                            <Row className="form-group">
+                                <Label htmlFor="firstname" md={12}>Rating</Label>
                                 <Col md={12}>
                                     <Control.select model=".rating" className="form-control" name="rating">
                                         <option>1</option>
@@ -122,7 +122,7 @@ class CommentForm extends Component {
                                 <Col md={10}>
                                     <Control.text model=".firstname" id="firstname" name="firstname" placeholder="Your Name" className="form-control"
                                         validators={{
-                                             maxLength: maxLength(15), minLength: minLength(3)
+                                            maxLength: maxLength(15), minLength: minLength(3)
                                         }} />
                                     <Errors className="text-danger" model=".firstname" show="touched"
                                         messages={{

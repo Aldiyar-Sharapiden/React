@@ -1,6 +1,5 @@
-import React, { Component, Fragment } from 'react';
-import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, Button, Col, Row } from 'reactstrap';
-import { Navbar, NavbarBrand, Nav, NavbarToggler, Collapse, NavItem, Jumbotron, Modal, ModalBody, ModalHeader, FormGroup, Label, Form, Input } from 'reactstrap';
+import React, { Component } from 'react';
+import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, Button, Col, Row, Label, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 
@@ -19,7 +18,8 @@ function RenderDish({ dish }) {
     );
 }
 
-function RenderComments({ comments }) {
+
+function RenderComments({ comments, addComment, dishId }) {
     if (comments != null) {
         return (
             <div className="col-12 col-md-5">
@@ -34,7 +34,7 @@ function RenderComments({ comments }) {
                         );
                     })}
                 </ul>
-                <CommentForm />
+                <CommentForm dishId={dishId} addComment={addComment} />
             </div>
         );
     } else {
@@ -44,34 +44,6 @@ function RenderComments({ comments }) {
         );
     }
 
-}
-const DishDetail = (props) => {
-    if (props.dish != null) {
-        return (
-            <div className="container">
-                <div className="row">
-                    <Breadcrumb>
-                        <BreadcrumbItem><Link to='/menu'>Menu</Link></BreadcrumbItem>
-                        <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
-                    </Breadcrumb>
-                    <div className="col-12">
-                        <h3>{props.dish.name}</h3>
-                        <hr />
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-12 col-md-5 m-1">
-                        <RenderDish dish={props.dish} />
-                    </div>
-                    <RenderComments comments={props.comments} />
-                </div>
-            </div>
-        );
-    } else {
-        return (
-            <div></div>
-        );
-    }
 }
 
 class CommentForm extends Component {
@@ -93,8 +65,8 @@ class CommentForm extends Component {
     }
 
     handleSubmit(values) {
-        console.log("Current state is: " + JSON.stringify(values));
-        alert("Current state is: " + JSON.stringify(values));
+        this.toggleModal();
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
     }
 
     render() {
@@ -104,9 +76,9 @@ class CommentForm extends Component {
                 <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
                     <ModalBody>
-                        <LocalForm onSubmit={this.handleSubmit}>
+                        <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
                             <Row className="form-group">
-                                <Label htmlFor="firstname" md={12}>Rating</Label>
+                                <Label htmlFor="rating" md={12}>Rating</Label>
                                 <Col md={12}>
                                     <Control.select model=".rating" className="form-control" name="rating">
                                         <option>1</option>
@@ -118,13 +90,13 @@ class CommentForm extends Component {
                                 </Col>
                             </Row>
                             <Row className="form-group">
-                                <Label htmlFor="firstname" md={12}>Your Name</Label>
+                                <Label htmlFor="author" md={12}>Your Name</Label>
                                 <Col md={10}>
-                                    <Control.text model=".firstname" id="firstname" name="firstname" placeholder="Your Name" className="form-control"
+                                    <Control.text model=".author" id="author" name="author" placeholder="Your Name" className="form-control"
                                         validators={{
                                             maxLength: maxLength(15), minLength: minLength(3)
                                         }} />
-                                    <Errors className="text-danger" model=".firstname" show="touched"
+                                    <Errors className="text-danger" model=".author" show="touched"
                                         messages={{
                                             minLength: 'Must be greater than 2 characters',
                                             maxLength: 'Must be 15 characters or less'
@@ -132,9 +104,9 @@ class CommentForm extends Component {
                                 </Col>
                             </Row>
                             <Row className="form-group">
-                                <Label htmlFor="message" md={12}>Comment</Label>
+                                <Label htmlFor="comment" md={12}>Comment</Label>
                                 <Col md={12}>
-                                    <Control.textarea model=".message" id="message" name="message" rows="8" className="form-control" />
+                                    <Control.textarea model=".comment" id="comment" name="comment" rows="8" className="form-control" />
                                 </Col>
                             </Row>
                             <Button type="submit" value="submit" color="primary">Sumbit</Button>
@@ -145,6 +117,41 @@ class CommentForm extends Component {
         );
     }
 }
+
+
+
+const DishDetail = (props) => {
+    if (props.dish != null) {
+        return (
+            <div className="container">
+                <div className="row">
+                    <Breadcrumb>
+                        <BreadcrumbItem><Link to='/menu'>Menu</Link></BreadcrumbItem>
+                        <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+                    </Breadcrumb>
+                    <div className="col-12">
+                        <h3>{props.dish.name}</h3>
+                        <hr />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-12 col-md-5 m-1">
+                        <RenderDish dish={props.dish} />
+                    </div>
+                    <RenderComments comments={props.comments}
+                        addComment={props.addComment}
+                        dishId={props.dish.id}/>
+                </div>
+            </div>
+        );
+    } else {
+        return (
+            <div></div>
+        );
+    }
+}
+
+
 
 
 
